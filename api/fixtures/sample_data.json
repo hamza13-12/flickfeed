@@ -1,0 +1,62 @@
+[
+  {
+    "model": "api.movie",
+    "pk": 1,
+    "fields": {
+      "title": "The Shawshank Redemption",
+      "genre": "DRAMA",
+      "release_year": 1994,
+      "description": "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.",
+      "poster_url": "https://example.com/shawshank_poster.jpg",
+      "created_at": "2023-01-01T12:00:00Z"
+    }
+  },
+  {
+    "model": "api.movie",
+    "pk": 2,
+    "fields": {
+      "title": "The Godfather",
+      "genre": "DRAMA",
+      "release_year": 1972,
+      "description": "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.",
+      "poster_url": "https://example.com/godfather_poster.jpg",
+      "created_at": "2023-01-01T12:05:00Z"
+    }
+  },
+  {
+    "model": "api.movie",
+    "pk": 3,
+    "fields": {
+      "title": "The Dark Knight",
+      "genre": "ACTION",
+      "release_year": 2008,
+      "description": "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
+      "poster_url": "https://example.com/dark_knight_poster.jpg",
+      "created_at": "2023-01-01T12:10:00Z"
+    }
+  },
+  {
+    "model": "api.movie",
+    "pk": 4,
+    "fields": {
+      "title": "Inception",
+      "genre": "SCI_FI",
+      "release_year": 2010,
+      "description": "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.",
+      "poster_url": "https://example.com/inception_poster.jpg",
+      "created_at": "2023-01-01T12:15:00Z"
+    }
+  },
+  {
+    "model": "api.movie",
+    "pk": 5,
+    "fields": {
+      "title": "Pulp Fiction",
+      "genre": "THRILLER",
+      "release_year": 1994,
+      "description": "The lives of two mob hitmen, a boxer, a gangster and his wife, and a pair of diner bandits intertwine in four tales of violence and redemption.",
+      "poster_url": "https://example.com/pulp_fiction_poster.jpg",
+      "created_at": "2023-01-01T12:20:00Z"
+    }
+  }
+] 
