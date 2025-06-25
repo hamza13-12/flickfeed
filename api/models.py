@@ -18,28 +18,32 @@ class UserProfile(models.Model):
     def follow(self, user_profile):
         """
         Follow another user profile
+
         """
-        pass
+        if user_profile != self:
+            self.following.add(user_profile)
+
+
     
     def unfollow(self, user_profile):
         """
         Unfollow another user profile
         """
-        pass
+        self.following.remove(user_profile)
     
     # TODO: Add method to get follower count
     def get_follower_count(self):
         """
         Return the number of followers
         """
-        pass
+        return self.followers.count()
     
     # TODO: Add method to get following count
     def get_following_count(self):
         """
         Return the number of users this profile is following
         """
-        pass
+        return self.following.count()
 
 class Movie(models.Model):
     """
@@ -72,7 +76,11 @@ class Movie(models.Model):
         """
         Calculate and return the average rating from all reviews
         """
-        pass
+        reviews = self.reviews.all()
+        if not reviews:
+            return None
+        total_rating = sum(review.rating for review in reviews)
+        return total_rating / reviews.count() if reviews.count() > 0 else None
 
 class Review(models.Model):
     """
@@ -97,7 +105,7 @@ class Review(models.Model):
         """
         Return the number of likes this review has received
         """
-        pass
+        return self.likes.count()
 
 class Comment(models.Model):
     """
