@@ -19,17 +19,6 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     
     # TODO: Add endpoint to view user profile
-    @action(detail=True, methods=['get'])
-    def profile(self, request, pk=None):
-        """
-        Get the user profile for a specific user.
-        """
-        user = self.get_object()
-        profile = UserProfile.objects.filter(user=user).first()
-        if profile:
-            serializer = UserProfileSerializer(profile)
-            return Response(serializer.data)
-        return Response({"detail": "Profile not found"}, status=status.HTTP_404_NOT_FOUND)
 
 class UserProfileViewSet(viewsets.ModelViewSet):
     """
@@ -46,14 +35,7 @@ class UserProfileViewSet(viewsets.ModelViewSet):
         Follow a user profile.
         """
         # TODO: Implement follow logic
-        user_to_follow = self.get_object()
-        user_profile = request.user.userprofile
-        user_profile.following.add(user_to_follow)
-        user_to_follow.followers.add(user_profile)
-        user_profile.save()
-        user_to_follow.save()
-        return Response({"detail": "Followed successfully"}, status=status.HTTP_200_OK)
-        # return Response({"detail": "Not implemented yet"}, status=status.HTTP_501_NOT_IMPLEMENTED)
+        return Response({"detail": "Not implemented yet"}, status=status.HTTP_501_NOT_IMPLEMENTED)
     
     @action(detail=True, methods=['post'])
     def unfollow(self, request, pk=None):
@@ -61,14 +43,7 @@ class UserProfileViewSet(viewsets.ModelViewSet):
         Unfollow a user profile.
         """
         # TODO: Implement unfollow logic
-        user_to_unfollow = self.get_object()
-        user_profile = request.user.userprofile     
-        user_profile.following.remove(user_to_unfollow)
-        user_to_unfollow.followers.remove(user_profile)
-        user_profile.save()
-        user_to_unfollow.save()
-        return Response({"detail": "Unfollowed successfully"}, status=status.HTTP_200_OK)
-        # return Response({"detail": "Not implemented yet"}, status=status.HTTP_501_NOT_IMPLEMENTED)
+        return Response({"detail": "Not implemented yet"}, status=status.HTTP_501_NOT_IMPLEMENTED)
     
     # TODO: Implement custom action to get user's feed (reviews from followed users)
     @action(detail=False, methods=['get'])
@@ -77,15 +52,7 @@ class UserProfileViewSet(viewsets.ModelViewSet):
         Get the authenticated user's feed of reviews from followed users.
         """
         # TODO: Implement feed logic
-        user_profile = request.user.userprofile
-        followed_users = user_profile.following.all()
-        reviews = []
-        for user in followed_users:
-            user_reviews = Review.objects.filter(user=user)
-            reviews.extend(user_reviews)
-        serializer = ReviewSerializer(reviews, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-        # return Response({"detail": "Not implemented yet"}, status=status.HTTP_501_NOT_IMPLEMENTED)
+        return Response({"detail": "Not implemented yet"}, status=status.HTTP_501_NOT_IMPLEMENTED)
 
 class MovieViewSet(viewsets.ModelViewSet):
     """
@@ -102,12 +69,7 @@ class MovieViewSet(viewsets.ModelViewSet):
         Get all reviews for a specific movie.
         """
         # TODO: Implement reviews retrieval logic
-        movie = self.get_object()
-        reviews = Review.objects.filter(movie=movie)
-        serializer = ReviewSerializer(reviews, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    # return Response({"detail": "Not implemented yet"}, status=status.HTTP_501_NOT_IMPLEMENTED
-        
+        return Response({"detail": "Not implemented yet"}, status=status.HTTP_501_NOT_IMPLEMENTED)
     
     # TODO: Add search and filtering functionality
     def get_queryset(self):
@@ -115,19 +77,8 @@ class MovieViewSet(viewsets.ModelViewSet):
         Optionally filter movies based on query parameters.
         """
         # TODO: Implement filtering by title, genre, release year
-        title = self.request.query_params.get('title', None)
-        genre = self.request.query_params.get('genre', None)
-        release_year = self.request.query_params.get('release_year', None)
-        if title:
-            self.queryset = self.queryset.filter(title__icontains=title)
-        if genre:
-            self.queryset = self.queryset.filter(genre=genre)
-        if release_year:
-            self.queryset = self.queryset.filter(release_year=release_year)
-            return self.queryset
-        # If no filters are applied, return all movies
-        return self.queryset
-   
+        return Movie.objects.all()
+
 class ReviewViewSet(viewsets.ModelViewSet):
     """
     ViewSet for viewing and editing review instances.
@@ -141,9 +92,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
         """
         Set the user when creating a review.
         """
-
         # TODO: Implement user assignment
-        
         pass
     
     # TODO: Add endpoint to like/unlike a review
@@ -185,9 +134,7 @@ class CommentViewSet(viewsets.ModelViewSet):
         """
         Set the author when creating a comment.
         """
-        
         # TODO: Implement author assignment
-
         pass
 
 class LikeViewSet(viewsets.ModelViewSet):

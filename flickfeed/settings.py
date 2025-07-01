@@ -87,15 +87,11 @@ WSGI_APPLICATION = 'flickfeed.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv('DB_NAME', 'flickfeed_db'),
-        "USER": os.getenv('DB_USER', 'flickfeed_user'),
-        "PASSWORD": os.getenv('DB_PASSWORD', 'yourpassword'),
-        "HOST": os.getenv('DB_HOST', 'localhost'),
-        "PORT": os.getenv('DB_PORT', '5432'),
-        },
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
+}
 
 
 # Password validation
