@@ -1,8 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
-from django.db.models import Avg
-
 
 class UserProfile(models.Model):
     """
@@ -12,41 +10,36 @@ class UserProfile(models.Model):
     bio = models.TextField(max_length=500, blank=True)
     profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
     following = models.ManyToManyField('self', symmetrical=False, related_name='followers', blank=True)
-
+    
     def __str__(self):
         return f"{self.user.username}'s profile"
-
+    
+    # TODO: Add methods for follow/unfollow functionality
     def follow(self, user_profile):
         """
-        Follow another user profile (if not already following).
+        Follow another user profile
         """
-        if user_profile != self and not self.is_following(user_profile):
-            self.following.add(user_profile)
-
+        pass
+    
     def unfollow(self, user_profile):
         """
-        Unfollow another user profile (if currently following).
+        Unfollow another user profile
         """
-        if self.is_following(user_profile):
-            self.following.remove(user_profile)
-
-    def is_following(self, user_profile):
-        """
-        Check if this profile is following another user profile.
-        """
-        return self.following.filter(id=user_profile.id).exists()
-
+        pass
+    
+    # TODO: Add method to get follower count
     def get_follower_count(self):
         """
-        Return the number of followers (other users who follow this profile).
+        Return the number of followers
         """
-        return self.followers.count()
-
+        pass
+    
+    # TODO: Add method to get following count
     def get_following_count(self):
         """
-        Return the number of users this profile is following.
+        Return the number of users this profile is following
         """
-        return self.following.count()
+        pass
 
 class Movie(models.Model):
     """
@@ -79,9 +72,7 @@ class Movie(models.Model):
         """
         Calculate and return the average rating from all reviews
         """
-        result = self.reviews.aggregate(Avg('rating'))
-        avg = result['rating__avg']
-        return round(avg, 2) if avg is not None else 0
+        pass
 
 class Review(models.Model):
     """
@@ -106,7 +97,7 @@ class Review(models.Model):
         """
         Return the number of likes this review has received
         """
-        return self.likes.count() # FK relation b/w likes and review, using ORM count method to get the data
+        pass
 
 class Comment(models.Model):
     """

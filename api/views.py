@@ -9,8 +9,6 @@ from .serializers import (
     ReviewSerializer, CommentSerializer, LikeSerializer
 )
 from .permissions import IsOwnerOrReadOnly, IsReviewAuthorOrReadOnly, IsCommentAuthorOrReadOnly, CannotLikeTwice
-from rest_framework.permissions import IsAuthenticated, AllowAny
-
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
     """
@@ -20,19 +18,7 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
     
-    @action(detail=True, methods=['get'], permission_classes=[permissions.AllowAny])
-    def profile(self, request, pk=None):
-        """
-        Get the user profile for a specific user.
-        """
-        user = self.get_object()
-        try:
-            profile = user.profile  # thanks to related_name='profile'
-        except UserProfile.DoesNotExist:
-            return Response({"detail": "User profile not found."}, status=status.HTTP_404_NOT_FOUND)
-
-        serializer = UserProfileSerializer(profile)
-        return Response(serializer.data)
+    # TODO: Add endpoint to view user profile
 
 class UserProfileViewSet(viewsets.ModelViewSet):
     """
@@ -42,39 +28,31 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     serializer_class = UserProfileSerializer
     permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
     
-    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
+    # TODO: Implement custom action for following/unfollowing users
+    @action(detail=True, methods=['post'])
     def follow(self, request, pk=None):
         """
         Follow a user profile.
         """
-        target = self.get_object()
-        current = request.user.profile
-        if current == target:
-            return Response({"detail": "You can't follow yourself."}, status=status.HTTP_400_BAD_REQUEST)
-        current.follow(target)
-        return Response({"detail": f"You are now following {target.user.username}."}, status=status.HTTP_200_OK)
+        # TODO: Implement follow logic
+        return Response({"detail": "Not implemented yet"}, status=status.HTTP_501_NOT_IMPLEMENTED)
     
-    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
+    @action(detail=True, methods=['post'])
     def unfollow(self, request, pk=None):
         """
         Unfollow a user profile.
         """
-        target = self.get_object()
-        current = request.user.profile
-        current.unfollow(target)
-        return Response({"detail": f"You unfollowed {target.user.username}."}, status=status.HTTP_200_OK)
+        # TODO: Implement unfollow logic
+        return Response({"detail": "Not implemented yet"}, status=status.HTTP_501_NOT_IMPLEMENTED)
     
-
-    @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
+    # TODO: Implement custom action to get user's feed (reviews from followed users)
+    @action(detail=False, methods=['get'])
     def feed(self, request):
         """
         Get the authenticated user's feed of reviews from followed users.
         """
-        current = request.user.profile
-        followed_users = current.following.all()
-        reviews = Review.objects.filter(user__profile__in=followed_users).order_by('-timestamp')
-        serializer = ReviewSerializer(reviews, many=True)
-        return Response(serializer.data)
+        # TODO: Implement feed logic
+        return Response({"detail": "Not implemented yet"}, status=status.HTTP_501_NOT_IMPLEMENTED)
 
 class MovieViewSet(viewsets.ModelViewSet):
     """
@@ -84,33 +62,22 @@ class MovieViewSet(viewsets.ModelViewSet):
     serializer_class = MovieSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     
-    @action(detail=True, methods=['get'], permission_classes=[permissions.AllowAny])
+    # TODO: Add endpoint to view movie reviews
+    @action(detail=True, methods=['get'])
     def reviews(self, request, pk=None):
         """
         Get all reviews for a specific movie.
         """
-        movie = self.get_object()
-        reviews = movie.reviews.all()  # uses related_name='reviews'
-        serializer = ReviewSerializer(reviews, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        # TODO: Implement reviews retrieval logic
+        return Response({"detail": "Not implemented yet"}, status=status.HTTP_501_NOT_IMPLEMENTED)
     
+    # TODO: Add search and filtering functionality
     def get_queryset(self):
         """
         Optionally filter movies based on query parameters.
         """
-        queryset = Movie.objects.all()
-        title = self.request.query_params.get('title')
-        genre = self.request.query_params.get('genre')
-        year = self.request.query_params.get('year')
-
-        if title:
-            queryset = queryset.filter(title__icontains=title)
-        if genre:
-            queryset = queryset.filter(genre__iexact=genre)
-        if year:
-            queryset = queryset.filter(release_year=year)
-
-        return queryset
+        # TODO: Implement filtering by title, genre, release year
+        return Movie.objects.all()
 
 class ReviewViewSet(viewsets.ModelViewSet):
     """
@@ -120,49 +87,39 @@ class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsReviewAuthorOrReadOnly]
     
-
+    # TODO: Override perform_create to set the user
     def perform_create(self, serializer):
         """
         Set the user when creating a review.
         """
-        serializer.save(user=self.request.user)
+        # TODO: Implement user assignment
+        pass
     
- 
-    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
+    # TODO: Add endpoint to like/unlike a review
+    @action(detail=True, methods=['post'])
     def like(self, request, pk=None):
         """
         Like a review.
         """
-        review = self.get_object()
-        user = request.user
-        if Like.objects.filter(user=user, review=review).exists():
-            return Response({"detail": "You already liked this review."}, status=status.HTTP_400_BAD_REQUEST)
-        Like.objects.create(user=user, review=review)
-        return Response({"detail": "Review liked."}, status=status.HTTP_201_CREATED)
+        # TODO: Implement like logic
+        return Response({"detail": "Not implemented yet"}, status=status.HTTP_501_NOT_IMPLEMENTED)
     
-    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
+    @action(detail=True, methods=['post'])
     def unlike(self, request, pk=None):
         """
         Unlike a review.
         """
-        review = self.get_object()
-        user = request.user
-        like = Like.objects.filter(user=user, review=review).first()
-        if not like:
-            return Response({"detail": "You haven't liked this review."}, status=status.HTTP_400_BAD_REQUEST)
-        like.delete()
-        return Response({"detail": "Review unliked."}, status=status.HTTP_204_NO_CONTENT)
+        # TODO: Implement unlike logic
+        return Response({"detail": "Not implemented yet"}, status=status.HTTP_501_NOT_IMPLEMENTED)
     
-  
-    @action(detail=True, methods=['get'], permission_classes=[permissions.IsAuthenticated])
+    # TODO: Add endpoint to list comments on a review
+    @action(detail=True, methods=['get'])
     def comments(self, request, pk=None):
         """
         Get all comments for a specific review.
         """
-        review = self.get_object()
-        comments = review.comments.all()
-        serializer = CommentSerializer(comments, many=True)
-        return Response(serializer.data)
+        # TODO: Implement comments retrieval logic
+        return Response({"detail": "Not implemented yet"}, status=status.HTTP_501_NOT_IMPLEMENTED)
 
 class CommentViewSet(viewsets.ModelViewSet):
     """
@@ -172,12 +129,13 @@ class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsCommentAuthorOrReadOnly]
     
-
+    # TODO: Override perform_create to set the author
     def perform_create(self, serializer):
         """
         Set the author when creating a comment.
         """
-        serializer.save(author=self.request.user)
+        # TODO: Implement author assignment
+        pass
 
 class LikeViewSet(viewsets.ModelViewSet):
     """
@@ -187,11 +145,12 @@ class LikeViewSet(viewsets.ModelViewSet):
     serializer_class = LikeSerializer
     permission_classes = [permissions.IsAuthenticated, CannotLikeTwice]
     
-  
+    # TODO: Override perform_create to set the user
     def perform_create(self, serializer):
         """
         Set the user when creating a like.
         """
-        serializer.save(user=self.request.user)
+        # TODO: Implement user assignment
+        pass
     
-    # TODO: Add validation to prevent multiple likes ######## <- ALR ADDED IN SERIALIZER.PY
+    # TODO: Add validation to prevent multiple likes

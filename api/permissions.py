@@ -14,7 +14,7 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
         # TODO: Implement owner check logic
         # Write permissions are only allowed to the owner of the object.
         # The intern should implement the owner check based on the object type.
-        return obj.user == request.user # Only true if the authenticated user is the one who is linked to the object (review)
+        return False
 
 class IsReviewAuthorOrReadOnly(permissions.BasePermission):
     """
@@ -29,7 +29,7 @@ class IsReviewAuthorOrReadOnly(permissions.BasePermission):
         # TODO: Implement author check logic
         # Only the author of a review should be able to edit or delete it
         # The intern should implement the author check
-        return obj.user == request.user
+        return False
 
 class IsCommentAuthorOrReadOnly(permissions.BasePermission):
     """
@@ -44,7 +44,7 @@ class IsCommentAuthorOrReadOnly(permissions.BasePermission):
         # TODO: Implement author check logic
         # Only the author of a comment should be able to edit or delete it
         # The intern should implement the author check
-        return obj.author == request.user
+        return False
 
 class CannotLikeTwice(permissions.BasePermission):
     """
@@ -54,6 +54,5 @@ class CannotLikeTwice(permissions.BasePermission):
     def has_permission(self, request, view):
         # TODO: Implement the check to prevent multiple likes
         # The intern should implement validation logic to check if the user
-        # has already liked the specified review 
+        # has already liked the specified review
         return True 
-        # Note: this i have already implemeneted in models which prevents duplicate likes.
